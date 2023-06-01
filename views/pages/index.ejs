@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/head') %>
+
+    <style>
+      table {
+        border: 1px solid #b3adad;
+        border-collapse: collapse;
+        padding: 5px;
+      }
+
+      table th {
+        border: 1px solid #b3adad;
+        padding: 5px;
+      }
+
+      table td {
+        border: 1px solid #b3adad;
+        text-align: center;
+        padding: 5px;
+      }
+    </style>
+</head>
+
+<body class="container">
+
+  <header>
+    <%- include('../partials/header') %>
+  </header>
+
+  <main>
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="jumbotron">
+          <h1>This is great</h1>
+          <p>Welcome to templating using EJS</p>
+        </div>
+      </div>
+
+      <div class="col-sm-4">
+        <div class="well">
+          <h3>Look I'm A Sidebar!</h3>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Short URL<br></th>
+            <th>Long URL</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>b2xVn2 <br></td>
+            <td>http://www.lighthouselabs.ca</td>
+            <td>
+
+              <form method="POST" action="/urls/9sm5xK/delete">
+                <Button>Delete</Button>
+              </form>
+            </td>
+          </tr>
+          <tr>
+            <td>9sm5xK <br></td>
+            <td>http://www.google.com <br></td>
+            <td>
+              <form method="POST" action="/urls/9sm5xK/delete">
+                <Button>Delete</Button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <%- include('../partials/footer') %>
+  </footer>
+
+</body>
+
+</html>

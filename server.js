@@ -1,6 +1,8 @@
 let express = require('express');
 let app = express();
-const generateShortKey = require(`./src/random.js`);
+const generateShortKey = require('./src/random.js');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -9,8 +11,9 @@ const urlDatabase = {
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
+app.use(cookieParser());
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }))
 
 // use res.render to load up an ejs view file
 
@@ -19,9 +22,6 @@ app.get('/', function (req, res) {
   res.render('pages/index');
 });
 
-app.get('/', function (req, res) {
-  res.render('pages/index');
-});
 
 // about page
 app.get('/about', function (req, res) {
@@ -29,17 +29,23 @@ app.get('/about', function (req, res) {
 });
 
 // tinyurl page
-app.get(`/urls/new`, (req, res) => {
-  res.render(`pages/urls_new`);
+app.get('/urls/new', (req, res) => {
+  res.render('pages/urls_new');
 });
 
+// login page
+app.get('/login', function (req, res) {
+  res.render('pages/login');
+});
+
+
 // handle urls/new POST request
-app.post(`/urls`, (req, res) => {
+app.post('/urls', (req, res) => {
   let shortID = generateShortKey(); // Generate shortURL id
   urlDatabase[shortID] = req.body.longURL; // Put this in the urlDatabase 
   console.log(urlDatabase);
   console.log(req.body); // Log the POST request body to the console
-  res.send(`Ok`);
+  res.send('Ok');
 });
 
 app.get("/u/:id", (req, res) => {
@@ -57,6 +63,18 @@ app.get("/u/:id", (req, res) => {
     res.status(404).redirect("");
   }
 });
+
+// handlelogin POST request
+app.post('/login', (req, res) => {
+ 
+   res.cookie('username', req.body.email);
+  
+   res.redirect('/urls');
+
+});
+
+// 23@g.com
+// 12345
 
 app.listen(8080);
 console.log('Server is listening on port 8080');

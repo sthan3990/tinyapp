@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/_header') %>
+    <link href="/styles/theme.css" rel="stylesheet" type="text/css">
+    <title>TinyApp | All URLs</title>
+</head>
+
+<body>
+
+  <div class="row">
+
+    <div class="main-wrapper ">
+
+      <div class="row">
+
+        <div class="section-wrapper">
+
+          <div class="nav-wrapper">
+            <%- include('../partials/_nav') %>
+          </div>
+
+          <main>
+
+            <div class="form-content">
+
+              <div class="form-items">
+
+                <div class="form-title">
+                  <h3>Found these URLs</h3>
+                </div>
+
+                <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
+
+                  <table class="table table-dark table-sm">
+
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Short URL ID</th>
+                        <th>Long URL</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                          <% for (let id in urls) { %>
+                          <tr>
+                            <td>
+                              <%= urls[id].id %>
+                            </td>
+                          <td>
+                            <%= urls[id].shortURL %>
+                          </td>
+                          <td>
+                            <%= urls[id].longURL %>
+                          </td>
+                          <td>
+                            <form action ="/urls/<%= id %>/edit" method="GET">
+                              <Button class="btn btn-primary">Edit</Button>
+                            </form>
+                          </td>
+                          <td>
+                            <form action ="/urls/<%= id %>/delete" method="POST">
+                              <Button class="btn btn-primary">Delete</Button>
+                            </form>
+                          </td>
+                        </tr>
+                          <% } %>        
+                    </tbody>
+                  </table>
+
+                  <a href="http://localhost:8080/urls_new">Create a new one</a>
+
+
+              </div>
+            </div>
+            <%- include('../partials/_footer') %>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+</body>
+
+</html>

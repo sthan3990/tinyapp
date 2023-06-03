@@ -1,30 +1,74 @@
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('../partials/_header') %>
-  </head>
-  <body>
-    <%- include('../partials/header') %>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="jumbotron">
-            <h2>
-              The Results.....
-            </h2>
-            <p>
-              Based on the key <b><%= id %></b>. The program found this link <b><%= url %></b>
-            </p>
-            <p>
-              <a href="<%= url %>" target="_blank">Visit Site</a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <%- include('../partials/_footer') %>
+<head>
+   <%- include('../partials/_header') %>
+    <link href="/styles/index.css" rel="stylesheet" type="text/css">
+    <title>TinyApp | View</title>
+</head>
 
+<body>
 
+  <div class="row">
     
-  </body>
+    <div class="main-wrapper">
+
+      <div class="row">
+
+          <div class="section-wrapper">
+
+            <div class="nav-wrapper">
+              <%- include('../partials/_nav') %>
+            </div>
+
+            
+              <div class="form-content">
+
+                  <div class="form-items">
+
+                      <div class="form-title">
+
+                        <h3>Logged in as: </h3>
+
+                      </div>
+                      
+                      <table class="table table-dark table-sm">
+
+                        <thead>
+                          <tr>
+                          
+
+                            <th>Short URL ID</th>
+                            <th>Long URL</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                            <td>b2xVn2<br></td>
+                            <td>http://www.lighthouselabs.ca</td>
+                            <td><Button class="btn btn-primary">Edit</Button></td>
+                            <td><Button class="btn btn-primary">Delete</Button></td>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+
+                  </div>
+              </div>
+              <%- include('../partials/_footer') %>
+
+          </div>
+      </div>
+  </div>
+
+  </div>
+
+
+
+</body>
+
 </html>

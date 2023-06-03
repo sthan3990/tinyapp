@@ -5,66 +5,26 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com",
+  "1": {
+    "id": 1,
+    "shortURL": "b2xVn2",
+    "longURL": "https://www.google.com"
+  },
+  "2": {
+    "id": 2,
+    "shortURL": "c2xVz2",
+    "longURL": "https://www.lighthouse.com"
+  },
 };
+
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 
 // css style folder static folder
 app.use(express.static(__dirname));
-
-// use res.render to load up an ejs view file
-
-// index page
-app.get('/', function (req, res) {
-  res.render('pages/index');
-});
-
-
-// about page
-app.get('/about', function (req, res) {
-  res.render('pages/about');
-});
-
-// tinyurl page
-app.get('/urls/new', (req, res) => {
-  res.render('pages/urls_new');
-});
-
-// handle urls/new POST request
-app.post('/urls', (req, res) => {
-
-  const templateVars = {
-    username: req.cookies["username"],
-    // ... any other vars
-  };
-  
-  let shortID = generateShortKey(); // Generate shortURL id
-  urlDatabase[shortID] = req.body.longURL; // Put this in the urlDatabase 
-  console.log(urlDatabase);
-  console.log(req.body); // Log the POST request body to the console
-  res.send('Ok');
-});
-
-app.get("/u/:id", (req, res) => {
-  const id = req.params.id;
-
-  // if the key value pair exists
-  if (urlDatabase[id]) {
-    const templateVars = {
-      url: urlDatabase[id],
-      id: id,
-    };
-
-    res.render("pages/urls_view", templateVars);
-  }   else {
-    res.status(404).redirect("");
-  }
-});
 
 // register page
 app.get('/register', function (req, res) {
@@ -78,16 +38,86 @@ app.get('/login', function (req, res) {
 
 // handlelogin POST request
 app.post('/login', (req, res) => {
- 
-  res.cookie('username', req.body.email);
- 
-  if (req.body.email === null) {
-   document.getElementById("emailError").innerHTML = "Enter Email";
-  }
 
-  res.redirect('/urls');
+  res.cookie('username', req.body.email);
+
+  res.redirect('/');
 
 });
+
+// index page
+app.get('/', function (req, res) {
+
+  const templateVars = {
+    username: req.cookies["username"],
+  };
+
+  res.render('pages/index', templateVars);
+});
+
+app.get('/urls_new', function (req, res) {
+  res.render('pages/urls_new');
+});
+
+// Page that shows what's inside urlDatabase
+app.get('/urls_index', function (req, res) {
+
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
+
+  res.render('pages/urls_index', templateVars);
+
+});
+
+// about page
+app.get('/about', function (req, res) {
+  res.render('pages/about');
+});
+
+// tinyurl page
+app.get('/urls/new', (req, res) => {
+  res.render('pages/urls_new');
+});
+
+// edit page
+app.get('/urls/:id/edit', (req, res) => {
+
+  const templateVars = {
+    urls: urlDatabase[req.params.id],
+    username: req.cookies["username"]
+  };
+
+  res.render('pages/urls_edit',templateVars);
+
+});
+
+// handle urls/new POST request
+app.post('/urls_new', (req, res) => {
+
+  const id = Math.floor(Math.random() * 100); // Generate id
+  const shortURL = generateShortKey(); // Generate shortURL id
+  const longURL = req.body.enteredURL;
+
+  urlDatabase[id] = {
+    id,
+    shortURL,
+    longURL,
+  };
+
+  console.log(urlDatabase);
+  res.send('Short URL Created!');
+});
+
+
+app.post("/urls/:id/delete", (req, res) => {
+
+  delete urlDatabase[req.params.id];
+  res.redirect("/");
+  
+});
+
 
 
 

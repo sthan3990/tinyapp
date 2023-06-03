@@ -1,43 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
 
-    <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
-      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-      crossorigin="anonymous"
-    />
+<head>
+  <%- include('../partials/_header') %>
+    <link href="/styles/register.css" rel="stylesheet" type="text/css">
+    <link href="/styles/global.css" rel="stylesheet" type="text/css">
+</head>
 
-    <title>New URL - TinyApp Example</title>
-  </head>
 
-  <body>
-    <%- include('../partials/header') %>
 
-    <main style="margin: 1em;">
-      <h3>Create TinyURL</h3>
-      <form class="form-inline" action="/urls" method="POST">
-        <div class="form-group mb-2">
-          <label for="longURL">Enter a URL:</label>
-          <input
-            class="form-control"
-            type="text"
-            name="longURL"
-            placeholder="http://"
-            style="width: 300px; margin: 1em"
-          />
-          <button type="submit" class="btn btn-primary">Submit</button>
+
+<body>
+
+  <div class="row">
+
+    <div class="main-wrapper ">
+
+      <div class="row">
+
+        <div class="section-wrapper">
+
+          <div class="nav-wrapper">
+            <%- include('../partials/_nav') %>
+
+          </div>
+
+          <main>
+
+            <div class="form-content">
+
+              <div class="form-items">
+
+                <div class="form-title">
+                  <h3>Register Today</h3>
+                </div>
+
+                <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
+                <form class="requires-validation" action="/method="POST">
+
+                  <div class="col-md-12">
+                    <input class="form-control" type="text" placeholder="Enter a URL" name="enteredURL" required>
+                  </div>
+
+                  <div class="form-button mt-4 d-grid col-6 mx-auto">
+                    <button id="submit" type="submit" class="btn btn-primary">Create</button>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+            <%- include('../partials/_footer') %>
+
         </div>
-      </form>
-    </main>
-    
-    
-  </body>
+      </div>
+    </div>
+
+  </div>
+
+
+
+</body>
+
 </html>

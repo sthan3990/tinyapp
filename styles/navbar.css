@@ -1,0 +1,19 @@
+.nav-link{
+  color: white;
+  font-size: 18px;
+
+}
+
+
+.nav-link {
+  font-size: 20px;
+  font-weight: bolder;
+  text-transform: uppercase;
+  height:100%
+}
+
+
+
+ul.nav a:hover { 
+  color: orange !important;
+}

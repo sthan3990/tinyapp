@@ -1,0 +1,25 @@
+p{
+  color: white !important;
+  font-size: 18px;
+}
+
+a:link { 
+  color: white !important;
+  font-size: 18px;
+  font-weight: bolder;
+  text-transform: uppercase;
+  height:100%
+}
+
+a:visited { 
+  color: white !important;
+  font-size: 18px;
+  font-weight: bolder;
+  text-transform: uppercase;
+  height:100%
+}
+
+
+a:hover { 
+  color: orange !important;
+}

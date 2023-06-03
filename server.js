@@ -12,8 +12,10 @@ const urlDatabase = {
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.use(cookieParser());
-
 app.use(express.urlencoded({ extended: false }))
+
+// css style folder static folder
+app.use(express.static(__dirname));
 
 // use res.render to load up an ejs view file
 
@@ -33,14 +35,14 @@ app.get('/urls/new', (req, res) => {
   res.render('pages/urls_new');
 });
 
-// login page
-app.get('/login', function (req, res) {
-  res.render('pages/login');
-});
-
-
 // handle urls/new POST request
 app.post('/urls', (req, res) => {
+
+  const templateVars = {
+    username: req.cookies["username"],
+    // ... any other vars
+  };
+  
   let shortID = generateShortKey(); // Generate shortURL id
   urlDatabase[shortID] = req.body.longURL; // Put this in the urlDatabase 
   console.log(urlDatabase);
@@ -64,14 +66,33 @@ app.get("/u/:id", (req, res) => {
   }
 });
 
+// register page
+app.get('/register', function (req, res) {
+  res.render('pages/register');
+});
+
+// login page
+app.get('/login', function (req, res) {
+  res.render('pages/login');
+});
+
 // handlelogin POST request
 app.post('/login', (req, res) => {
  
-   res.cookie('username', req.body.email);
-  
-   res.redirect('/urls');
+  res.cookie('username', req.body.email);
+ 
+  if (req.body.email === null) {
+   document.getElementById("emailError").innerHTML = "Enter Email";
+  }
+
+  res.redirect('/urls');
 
 });
+
+
+
+
+
 
 // 23@g.com
 // 12345

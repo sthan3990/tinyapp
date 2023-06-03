@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('../partials/_header') %>
+    <link href="/styles/register.css" rel="stylesheet" type="text/css">
+    <link href="/styles/global.css" rel="stylesheet" type="text/css">
+</head>
+
+
+
+
+<body>
+
+  <div class="row">
+
+    <div class="main-wrapper ">
+
+      <div class="row">
+
+        <div class="section-wrapper">
+
+          <div class="nav-wrapper">
+            <%- include('../partials/_nav') %>
+
+          </div>
+
+          <main>
+
+            <div class="form-content">
+
+              <div class="form-items">
+
+                <div class="form-title">
+                  <h3>Register Today</h3>
+                </div>
+
+                <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
+                <form class="requires-validation" method="POST">
+
+                  <div class="col-md-12">
+                    <input class="form-control" type="text" placeholder="Full Name" required>
+                  </div>
+
+                  <div class="col-md-12">
+                    <input class="form-control" type="email" name="email" placeholder="E-mail Address" required>
+                  </div>
+
+                  <div class="col-md-12">
+                    <input class="form-control" type="password" name="password" placeholder="Password" required>
+                  </div>
+
+                  <div class="form-button mt-4 d-grid col-6 mx-auto">
+                    <button id="submit" type="submit" class="btn btn-primary">Register</button>
+                  </div>
+                </form>
+
+              </div>
+            </div>
+            <%- include('../partials/_footer') %>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+</body>
+
+</html>

@@ -3,8 +3,8 @@
 
 <head>
    <%- include('../partials/_header') %>
-    <link href="/styles/login.css" rel="stylesheet" type="text/css">
-    <link href="/styles/global.css" rel="stylesheet" type="text/css">
+    <link href="/styles/index.css" rel="stylesheet" type="text/css">
+    <title>TinyApp | Home</title>
 </head>
 
 <body>
@@ -21,32 +21,41 @@
               <%- include('../partials/_nav') %>
             </div>
 
+            
               <div class="form-content">
 
                   <div class="form-items">
 
                       <div class="form-title">
-                        <h3>Login</h3>
+
+                        <h3>Logged in as: <%= username %></h3>
+
                       </div>
                       
-                      <form>
+                      <table class="table table-dark table-sm">
 
-                          <div class="col-md-12">
-                              <input class="form-control" type="email" name="email" placeholder="E-mail Address" required>
-                               <div class="valid-feedback">Email field is valid!</div>
-                               <div class="invalid-feedback">Email field cannot be blank!</div>
-                          </div>
+                        <thead>
+                          <tr>
+                        
 
-                         <div class="col-md-12">
-                            <input class="form-control" type="password" name="password" placeholder="Password" required>
-                             <div class="valid-feedback">Password field is valid!</div>
-                             <div class="invalid-feedback">Password field cannot be blank!</div>
-                         </div>  
-  
-                          <div class="form-button mt-4 d-grid col-6 mx-auto">
-                              <button id="submit" type="submit" class="btn btn-primary">Register</button>
-                          </div>
-                      </form>
+                            <th>Short URL ID</th>
+                            <th>Long URL</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                            <td>b2xVn2<br></td>
+                            <td>http://www.lighthouselabs.ca</td>
+                            <td><Button class="btn btn-primary">Edit</Button></td>
+                            <td><Button class="btn btn-primary">Delete</Button></td>
+                            </td>
+                          </tr>
+
+                        </tbody>
+                      </table>
 
                   </div>
               </div>

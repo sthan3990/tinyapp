@@ -3,6 +3,11 @@ html, body {
   background-color: #0B1015;
 }
 
+h3 h4{
+  color: #fff;
+  margin: 15px;
+}
+
 .main-wrapper {
     display: flex;
     flex-direction: column;
@@ -46,13 +51,15 @@ align-items: center;
   text-align: left;
 }
 
-.form-content h3 {
+.form-content {
   color: #fff;
   text-align: left;
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 5px;
 }
+
+
 
 .form-content p {
   color: #fff;

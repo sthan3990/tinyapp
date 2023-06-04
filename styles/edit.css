@@ -4,6 +4,7 @@ input:read-only {
 }
 
 .form-content input[id=shortURL] {
-  color: red;
+  color: white;
+  font-weight: 600;
 }
 

@@ -1,6 +1,6 @@
 let express = require('express');
 let app = express();
-const generateShortKey = require('./src/random.js');
+const generateShortKey = require('./src/helpers/random.js');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
@@ -20,11 +20,23 @@ const urlDatabase = {
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
-app.use(cookieParser());
+app.use(cookieParser()
+
+  // cookieSession({
+  //   name: 'session',
+  //   keys: ['key1'],? ['key2']
+  //   maxAge: 10 * 60 * 1000 // 10 mins
+  // })
+
+
+);
 app.use(express.urlencoded({ extended: false }));
 
 // css style folder static folder
 app.use(express.static(__dirname));
+
+// helmet for security 
+//app.use(helmet());
 
 // register page
 app.get('/register', function (req, res) {
@@ -112,11 +124,18 @@ app.post('/urls_new', (req, res) => {
 
 
 app.post("/urls/:id/delete", (req, res) => {
-
   delete urlDatabase[req.params.id];
   res.redirect("/");
-  
 });
+
+app.post("/urls/:id/edit", (req, res) => {
+
+  urlDatabase[req.params.id].longURL = req.body.enteredURL;
+
+  res.redirect("/");
+
+});
+
 
 
 

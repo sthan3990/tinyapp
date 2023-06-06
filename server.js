@@ -127,7 +127,7 @@ app.get('/', function (req, res) {
   // if user is not logged in
   if (!req.cookies["username"]) {
 
-    res.redirect('/index');
+    res.stredirect('/index');
 
   } else {
     const templateVars = {
@@ -234,14 +234,7 @@ app.post('/register', (req, res) => {
 
   res.cookie('username', req.body.email);
 
-  console.log(req.cookies["username"]);
-
-  const templateVars = {
-    urls: urlDatabase,
-    username: req.cookies["username"]
-  };
-
-  res.render('pages/urls_index', templateVars);
+  res.redirect('/login');
 
 });
 

@@ -92,27 +92,56 @@ app.get('/login', function (req, res) {
 app.post('/login', (req, res) => {
   let statusMsg = "";
 
+  // 0 all good
+  // 1  email not found
+  // 2  password not found
+  // since you can't have a password without a email 
+  // there won't be a email and password not found
+
+  let statusCode = 0;
+
   for (let user in userDatabase) {
 
     let databaseEmail = userDatabase[user].email;
     let databasePassword = userDatabase[user].password;
-    
+
     // email not found
-    if (databaseEmail === req.body.email && bcrypt.compareSync(req.body.password, databasePassword) === true) {
-
-      res.redirect('/urls_index');
-
+    if (databaseEmail !== req.body.email) {
+      statusCode = 1;
     }
+    elif(bcrypt.compareSync(req.body.password, databasePassword) === false) {
+      statusCode = 2;
+    }
+  }
+
+
+  if (statusCode === 1) {
+
+    statusMsg = "Email not found.";
+
+    const templateVars = {
+      msg: statusMsg,
+    };
+
+    res.status(400).render('pages/login', templateVars);
+  }
+
+  else if (statusCode === 2) {
+
+    statusMsg = "Passwords is incorrect.";
+
+    const templateVars = {
+      msg: statusMsg,
+    };
+    res.status(400).render('pages/login', templateVars);
 
   }
 
-  statusMsg = "Email and passwords  not found.";
+  else {
+    res.redirect('/urls_index');
 
-  const templateVars = {
-    msg: statusMsg,
-  };
+  }
 
-  res.status(400).render('pages/login', templateVars);
 
 });
 
@@ -245,7 +274,6 @@ app.post('/register', (req, res) => {
     password,
   };
 
-  console.log(userDatabase);
   req.session.userID = userDatabase[id].email;
 
   res.redirect('/login');

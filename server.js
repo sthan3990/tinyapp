@@ -3,6 +3,7 @@ let app = express();
 const generateShortKey = require('./src/helpers/random.js');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const helmet = require('helmet');
 
 const urlDatabase = {
   "1": {
@@ -20,23 +21,14 @@ const urlDatabase = {
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
-app.use(cookieParser()
-
-  // cookieSession({
-  //   name: 'session',
-  //   keys: ['key1'],? ['key2']
-  //   maxAge: 10 * 60 * 1000 // 10 mins
-  // })
-
-
-);
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 // css style folder static folder
 app.use(express.static(__dirname));
 
-// helmet for security 
-//app.use(helmet());
+// helmet for security
+app.use(helmet());
 
 // register page
 app.get('/register', function (req, res) {
@@ -53,18 +45,29 @@ app.post('/login', (req, res) => {
 
   res.cookie('username', req.body.email);
 
-  res.redirect('/');
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"],
+  };
+
+  res.render('pages/urls_index', templateVars);
 
 });
 
 // index page
 app.get('/', function (req, res) {
 
-  const templateVars = {
-    username: req.cookies["username"],
-  };
+  // if user is not logged in
+  if (!req.cookies["username"]) {
+    res.redirect('login');
+  } else {
+    const templateVars = {
+      urls: urlDatabase,
+      username: req.cookies["username"],
+    };
 
-  res.render('pages/index', templateVars);
+    res.render('pages/urls_index', templateVars);
+  }
 });
 
 app.get('/urls_new', function (req, res) {
@@ -74,12 +77,24 @@ app.get('/urls_new', function (req, res) {
 // Page that shows what's inside urlDatabase
 app.get('/urls_index', function (req, res) {
 
-  const templateVars = {
-    urls: urlDatabase,
-    username: req.cookies["username"]
-  };
+  if (req.cookies["username"]) {
+    const templateVars = {
+      urls: urlDatabase,
+      username: req.cookies["username"]
+    };
 
-  res.render('pages/urls_index', templateVars);
+    res.render('pages/urls_index', templateVars);
+
+  } else {
+    
+    const templateVars = {
+      msg: "Access to URLs denied. You must be logged in.",
+    };
+
+    res.status("401");
+    res.render('pages/index', templateVars);
+
+  }
 
 });
 
@@ -101,7 +116,7 @@ app.get('/urls/:id/edit', (req, res) => {
     username: req.cookies["username"]
   };
 
-  res.render('pages/urls_edit',templateVars);
+  res.render('pages/urls_edit', templateVars);
 
 });
 
@@ -137,6 +152,17 @@ app.post("/urls/:id/edit", (req, res) => {
 });
 
 
+app.get("/urls_logout", (req, res) => {
+  res.clearCookie();
+
+  const templateVars = {
+    msg: "Logged Out",
+  };
+
+
+  res.render('pages/index', templateVars);
+
+});
 
 
 

@@ -18,7 +18,7 @@
         <div class="section-wrapper">
 
           <div class="nav-wrapper">
-            <%- include('../partials/_nav') %>
+            <%- include('../partials/_navMember') %>
           </div>
 
           <main>
@@ -27,63 +27,67 @@
 
               <div class="form-items">
 
-                <div class="form-title">
-                  <h3>Found these URLs</h3>
+                <div class="col-md-6">
+                  <p class="login-style">Login Info: <%= username %></p>
                 </div>
 
-                <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
+                <div class="form-title">
+                  <h3>URLs Table Summary</h3>
+                </div>
 
-                  <table class="table table-dark table-lg">
 
-                    <thead>
+                <table class="table table-dark table-lg">
+
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Short URL</th>
+                      <th>Long URL</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <% for (let id in urls) { %>
                       <tr>
-                        <th>ID</th>
-                        <th>Short URL</th>
-                        <th>Long URL</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <td>
+                          <%= urls[id].id %>
+                        </td>
+                        <td>
+                          <%= urls[id].shortURL %>
+                        </td>
+                        <td>
+                          <%= urls[id].longURL %>
+                        </td>
+                        <td>
+                          <form action="/urls/<%= id %>/edit" method="GET">
+                            <Button class="btn btn-primary">Edit</Button>
+                          </form>
+                        </td>
+                        <td>
+                          <form action="/urls/<%= id %>/delete" method="POST">
+                            <Button class="btn btn-primary">Delete</Button>
+                          </form>
+                        </td>
                       </tr>
-                    </thead>
+                      <% } %>
+                  </tbody>
+                </table>
 
-                    <tbody>
-                          <% for (let id in urls) { %>
-                          <tr>
-                            <td>
-                              <%= urls[id].id %>
-                            </td>
-                          <td>
-                            <%= urls[id].shortURL %>
-                          </td>
-                          <td>
-                            <%= urls[id].longURL %>
-                          </td>
-                          <td>
-                            <form action ="/urls/<%= id %>/edit" method="GET">
-                              <Button class="btn btn-primary">Edit</Button>
-                            </form>
-                          </td>
-                          <td>
-                            <form action ="/urls/<%= id %>/delete" method="POST">
-                              <Button class="btn btn-primary">Delete</Button>
-                            </form>
-                          </td>
-                        </tr>
-                          <% } %>        
-                    </tbody>
-                  </table>
-
-                  <a href="http://localhost:8080/urls_new">Create a new one</a>
-
-
-              </div>
-            </div>
-            <%- include('../partials/_footer') %>
+          </main>
 
         </div>
       </div>
     </div>
-
   </div>
+  <%- include('../partials/_footer') %>
+
+    </div>
+    </div>
+    </div>
+
+    </div>
 
 
 

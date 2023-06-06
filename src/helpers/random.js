@@ -31,5 +31,7 @@ const generateShortKey = () => {
   return shortURL;
 };
 
-module.exports = generateShortKey;
+
+
+module.exports = { generateShortKey};
 

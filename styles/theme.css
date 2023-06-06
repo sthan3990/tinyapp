@@ -5,7 +5,11 @@ html, body {
 
 h3 h4{
   color: #fff;
-  margin: 15px;
+  margin: 30px;
+}
+
+.login-style {
+  color: yellow !important;
 }
 
 .main-wrapper {
@@ -35,7 +39,8 @@ h3 h4{
 }
 
 .form-title{
-margin-bottom: 30px;
+margin-top: 25px;
+margin-bottom: 25px;
 display: flex;
 justify-content: center;
 align-items: center;

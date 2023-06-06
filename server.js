@@ -2,9 +2,11 @@ let express = require('express');
 let app = express();
 const generateShortKey = require('./src/helpers/random.js');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 const bcrypt = require("bcrypt");
+
+const statusMsg = "";
 
 const urlDatabase = {
   "1": {
@@ -30,7 +32,14 @@ const userDatabase = {
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
+
 app.use(express.urlencoded({ extended: false }));
 
 // css style folder static folder
@@ -42,15 +51,21 @@ app.use(helmet());
 // register page
 app.get('/register', function (req, res) {
 
-  if (req.cookies["username"]) {
+  if (req.session.userID) {
     const templateVars = {
       urls: urlDatabase,
-      username: req.cookies["username"]
+      msg: statusMsg,
+      username: req.session.userID
     };
 
     res.render('pages/urls_index', templateVars);
+
   } else {
-    res.render('pages/register');
+    const templateVars = {
+      msg: statusMsg
+    };
+
+    res.render('pages/register', templateVars);
   }
 
 });
@@ -58,7 +73,7 @@ app.get('/register', function (req, res) {
 app.get('/index', function (req, res) {
 
   const templateVars = {
-    msg: "",
+    msg: statusMsg,
   };
   res.render('pages/index', templateVars);
 });
@@ -67,7 +82,7 @@ app.get('/index', function (req, res) {
 app.get('/login', function (req, res) {
 
   const templateVars = {
-    msg: "",
+    msg: statusMsg,
   };
 
   res.render('pages/login', templateVars);
@@ -77,47 +92,27 @@ app.get('/login', function (req, res) {
 app.post('/login', (req, res) => {
   let statusMsg = "";
 
-  console.log("login page");
+  for (let user in userDatabase) {
 
-  for (let id in userDatabase) {
-
-    let databaseEmail = userDatabase[id].email;
-    let databasePassword = userDatabase[id].password;
-
+    let databaseEmail = userDatabase[user].email;
+    let databasePassword = userDatabase[user].password;
+    
     // email not found
-    if (!databaseEmail === req.body.email) {
+    if (databaseEmail === req.body.email && bcrypt.compareSync(req.body.password, databasePassword) === true) {
 
-      statusMsg = "Email address not found.";
+      res.redirect('/urls_index');
 
-      const templateVars = {
-        msg: statusMsg,
-      };
-
-      res.render('pages/login', templateVars);
-    }
-
-    // compare hash to check password is correct
-    if (!bcrypt.compareSync(req.body.password, databasePassword)) {
-
-      statusMsg = "Invalid password.";
-
-      const templateVars = {
-        msg: statusMsg,
-      };
-
-      res.render('pages/login', templateVars);
     }
 
   }
 
-  res.cookie('username', req.body.email);
+  statusMsg = "Email and passwords  not found.";
 
   const templateVars = {
-    urls: urlDatabase,
-    username: req.cookies["username"],
+    msg: statusMsg,
   };
 
-  res.render('pages/urls_index', templateVars);
+  res.status(400).render('pages/login', templateVars);
 
 });
 
@@ -125,14 +120,14 @@ app.post('/login', (req, res) => {
 app.get('/', function (req, res) {
 
   // if user is not logged in
-  if (!req.cookies["username"]) {
+  if (!req.session.userID) {
 
-    res.stredirect('/index');
+    res.status(400).redirect('/index');
 
   } else {
     const templateVars = {
       urls: urlDatabase,
-      username: req.cookies["username"],
+      username: req.session.userID,
     };
 
     res.render('pages/urls_index', templateVars);
@@ -146,10 +141,11 @@ app.get('/urls_new', function (req, res) {
 // Page that shows what's inside urlDatabase
 app.get('/urls_index', function (req, res) {
 
-  if (req.cookies["username"]) {
+  if (req.session.userID) {
+
     const templateVars = {
       urls: urlDatabase,
-      username: req.cookies["username"]
+      username: req.session.userID
     };
 
     res.status(400).render('pages/urls_index', templateVars);
@@ -159,7 +155,6 @@ app.get('/urls_index', function (req, res) {
     const templateVars = {
       msg: "Access to URLs denied. You must be logged in.",
     };
-
 
     res.status(400).render('pages/index', templateVars);
 
@@ -177,7 +172,7 @@ app.get('/urls/:id/edit', (req, res) => {
 
   const templateVars = {
     urls: urlDatabase[req.params.id],
-    username: req.cookies["username"]
+    username: req.session.userID
   };
 
   res.render('pages/urls_edit', templateVars);
@@ -196,6 +191,7 @@ app.post('/urls_new', (req, res) => {
     shortURL,
     longURL,
   };
+
 
   res.redirect("/urls_index");
 });
@@ -217,11 +213,28 @@ app.post("/urls/:id/edit", (req, res) => {
 // Handle registration
 app.post('/register', (req, res) => {
 
+  const email = req.body.email;
+
+  for (let user in userDatabase) {
+
+    let databaseEmail = userDatabase[user].email;
+
+    // email already exists
+    if (databaseEmail === email) {
+
+      const templateVars = {
+        msg: `Email: ${databaseEmail} already exisits!`
+      };
+
+      res.status(400).res.render('pages/register', templateVars);
+
+    }
+  }
+
   const id = Math.floor(Math.random() * 4); // Generate id
   const name = req.body.fullname;
-  const email = req.body.email;
   const salt = bcrypt.genSaltSync(5);
-  console.log(name + email);
+
   // use salt to hash password
   const password = bcrypt.hashSync(req.body.password, salt);
 
@@ -232,14 +245,15 @@ app.post('/register', (req, res) => {
     password,
   };
 
-  res.cookie('username', req.body.email);
+  console.log(userDatabase);
+  req.session.userID = userDatabase[id].email;
 
   res.redirect('/login');
 
 });
 
 app.get('/urls_logout', (req, res) => {
-  res.clearCookie("username");
+  req.session = null;
 
   const templateVars = {
     msg: "Logged Out",

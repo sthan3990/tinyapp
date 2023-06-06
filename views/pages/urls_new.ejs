@@ -3,8 +3,6 @@
 
 <head>
   <%- include('../partials/_header') %>
-    <link href="/styles/register.css" rel="stylesheet" type="text/css">
-    <link href="/styles/global.css" rel="stylesheet" type="text/css">
 </head>
 
 
@@ -21,7 +19,7 @@
         <div class="section-wrapper">
 
           <div class="nav-wrapper">
-            <%- include('../partials/_nav') %>
+            <%- include('../partials/_navMember') %>
 
           </div>
 
@@ -32,11 +30,10 @@
               <div class="form-items">
 
                 <div class="form-title">
-                  <h3>Register Today</h3>
+                  <h3>Create Short URL...</h3>
                 </div>
 
-                <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
-                <form class="requires-validation" action="/method="POST">
+                <form class="requires-validation" action="/urls_new" method="POST">
 
                   <div class="col-md-12">
                     <input class="form-control" type="text" placeholder="Enter a URL" name="enteredURL" required>

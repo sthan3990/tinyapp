@@ -33,5 +33,5 @@ const generateShortKey = () => {
 
 
 
-module.exports = { generateShortKey};
+module.exports = generateShortKey;
 

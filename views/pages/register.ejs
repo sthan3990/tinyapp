@@ -3,12 +3,7 @@
 
 <head>
   <%- include('../partials/_header') %>
-    <link href="/styles/register.css" rel="stylesheet" type="text/css">
-    <link href="/styles/global.css" rel="stylesheet" type="text/css">
 </head>
-
-
-
 
 <body>
 
@@ -25,7 +20,6 @@
 
           </div>
 
-          <main>
 
             <div class="form-content">
 
@@ -36,10 +30,12 @@
                 </div>
 
                 <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
-                <form class="requires-validation" method="POST">
+                <main>
+
+                <form class="requires-validation" action="/register" method="POST">
 
                   <div class="col-md-12">
-                    <input class="form-control" type="text" placeholder="Full Name" required>
+                    <input class="form-control" type="text" placeholder="Full Name" name="fullname" required>
                   </div>
 
                   <div class="col-md-12">
@@ -54,6 +50,8 @@
                     <button id="submit" type="submit" class="btn btn-primary">Register</button>
                   </div>
                 </form>
+
+                </main>
 
               </div>
             </div>

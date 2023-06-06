@@ -4,6 +4,7 @@ const generateShortKey = require('./src/helpers/random.js');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
+const bcrypt = require("bcrypt");
 
 const urlDatabase = {
   "1": {
@@ -18,6 +19,14 @@ const urlDatabase = {
   },
 };
 
+const userDatabase = {
+  "1": {
+    "id": 1,
+    "name": "steve",
+    "email": "abc@gmail.com",
+    "password": "",
+  },
+};
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -32,16 +41,74 @@ app.use(helmet());
 
 // register page
 app.get('/register', function (req, res) {
-  res.render('pages/register');
+
+  if (req.cookies["username"]) {
+    const templateVars = {
+      urls: urlDatabase,
+      username: req.cookies["username"]
+    };
+
+    res.render('pages/urls_index', templateVars);
+  } else {
+    res.render('pages/register');
+  }
+
+});
+
+app.get('/index', function (req, res) {
+
+  const templateVars = {
+    msg: "",
+  };
+  res.render('pages/index', templateVars);
 });
 
 // login page
 app.get('/login', function (req, res) {
-  res.render('pages/login');
+
+  const templateVars = {
+    msg: "",
+  };
+
+  res.render('pages/login', templateVars);
 });
 
 // handlelogin POST request
 app.post('/login', (req, res) => {
+  let statusMsg = "";
+
+  console.log("login page");
+
+  for (let id in userDatabase) {
+
+    let databaseEmail = userDatabase[id].email;
+    let databasePassword = userDatabase[id].password;
+
+    // email not found
+    if (!databaseEmail === req.body.email) {
+
+      statusMsg = "Email address not found.";
+
+      const templateVars = {
+        msg: statusMsg,
+      };
+
+      res.render('pages/login', templateVars);
+    }
+
+    // compare hash to check password is correct
+    if (!bcrypt.compareSync(req.body.password, databasePassword)) {
+
+      statusMsg = "Invalid password.";
+
+      const templateVars = {
+        msg: statusMsg,
+      };
+
+      res.render('pages/login', templateVars);
+    }
+
+  }
 
   res.cookie('username', req.body.email);
 
@@ -59,7 +126,9 @@ app.get('/', function (req, res) {
 
   // if user is not logged in
   if (!req.cookies["username"]) {
-    res.redirect('login');
+
+    res.redirect('/index');
+
   } else {
     const templateVars = {
       urls: urlDatabase,
@@ -83,24 +152,19 @@ app.get('/urls_index', function (req, res) {
       username: req.cookies["username"]
     };
 
-    res.render('pages/urls_index', templateVars);
+    res.status(400).render('pages/urls_index', templateVars);
 
   } else {
-    
+
     const templateVars = {
       msg: "Access to URLs denied. You must be logged in.",
     };
 
-    res.status("401");
-    res.render('pages/index', templateVars);
+
+    res.status(400).render('pages/index', templateVars);
 
   }
 
-});
-
-// about page
-app.get('/about', function (req, res) {
-  res.render('pages/about');
 });
 
 // tinyurl page
@@ -133,8 +197,7 @@ app.post('/urls_new', (req, res) => {
     longURL,
   };
 
-  console.log(urlDatabase);
-  res.send('Short URL Created!');
+  res.redirect("/urls_index");
 });
 
 
@@ -151,26 +214,47 @@ app.post("/urls/:id/edit", (req, res) => {
 
 });
 
+// Handle registration
+app.post('/register', (req, res) => {
 
-app.get("/urls_logout", (req, res) => {
-  res.clearCookie();
+  const id = Math.floor(Math.random() * 4); // Generate id
+  const name = req.body.fullname;
+  const email = req.body.email;
+  const salt = bcrypt.genSaltSync(5);
+  console.log(name + email);
+  // use salt to hash password
+  const password = bcrypt.hashSync(req.body.password, salt);
+
+  userDatabase[id] = {
+    id,
+    name,
+    email,
+    password,
+  };
+
+  res.cookie('username', req.body.email);
+
+  console.log(req.cookies["username"]);
+
+  const templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]
+  };
+
+  res.render('pages/urls_index', templateVars);
+
+});
+
+app.get('/urls_logout', (req, res) => {
+  res.clearCookie("username");
 
   const templateVars = {
     msg: "Logged Out",
   };
 
-
   res.render('pages/index', templateVars);
 
 });
-
-
-
-
-
-
-// 23@g.com
-// 12345
 
 app.listen(8080);
 console.log('Server is listening on port 8080');

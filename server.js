@@ -49,7 +49,7 @@ app.use(express.static(__dirname));
 app.use(helmet());
 
 // register page
-app.get('/register', function (req, res) {
+app.get('/register', function(req, res) {
 
   if (req.session.userID) {
     const templateVars = {
@@ -70,7 +70,7 @@ app.get('/register', function (req, res) {
 
 });
 
-app.get('/index', function (req, res) {
+app.get('/index', function(req, res) {
 
   const templateVars = {
     msg: statusMsg,
@@ -79,7 +79,7 @@ app.get('/index', function (req, res) {
 });
 
 // login page
-app.get('/login', function (req, res) {
+app.get('/login', function(req, res) {
 
   const templateVars = {
     msg: statusMsg,
@@ -95,7 +95,7 @@ app.post('/login', (req, res) => {
   // 0 all good
   // 1  email not found
   // 2  password not found
-  // since you can't have a password without a email 
+  // since you can't have a password without a email
   // there won't be a email and password not found
 
   let statusCode = 0;
@@ -108,10 +108,10 @@ app.post('/login', (req, res) => {
     // email not found
     if (databaseEmail !== req.body.email) {
       statusCode = 1;
-    }
-    elif(bcrypt.compareSync(req.body.password, databasePassword) === false) {
+    } else if (bcrypt.compareSync(req.body.password, databasePassword) === false) {
       statusCode = 2;
     }
+
   }
 
 
@@ -122,11 +122,8 @@ app.post('/login', (req, res) => {
     const templateVars = {
       msg: statusMsg,
     };
-
     res.status(400).render('pages/login', templateVars);
-  }
-
-  else if (statusCode === 2) {
+  } else if (statusCode === 2) {
 
     statusMsg = "Passwords is incorrect.";
 
@@ -135,9 +132,7 @@ app.post('/login', (req, res) => {
     };
     res.status(400).render('pages/login', templateVars);
 
-  }
-
-  else {
+  } else {
     res.redirect('/urls_index');
 
   }
@@ -146,7 +141,7 @@ app.post('/login', (req, res) => {
 });
 
 // index page
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
 
   // if user is not logged in
   if (!req.session.userID) {
@@ -163,12 +158,12 @@ app.get('/', function (req, res) {
   }
 });
 
-app.get('/urls_new', function (req, res) {
+app.get('/urls_new', function(req, res) {
   res.render('pages/urls_new');
 });
 
 // Page that shows what's inside urlDatabase
-app.get('/urls_index', function (req, res) {
+app.get('/urls_index', function(req, res) {
 
   if (req.session.userID) {
 
@@ -180,15 +175,11 @@ app.get('/urls_index', function (req, res) {
     res.status(400).render('pages/urls_index', templateVars);
 
   } else {
-
     const templateVars = {
       msg: "Access to URLs denied. You must be logged in.",
     };
-
     res.status(400).render('pages/index', templateVars);
-
   }
-
 });
 
 // tinyurl page
@@ -232,11 +223,8 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/urls/:id/edit", (req, res) => {
-
   urlDatabase[req.params.id].longURL = req.body.enteredURL;
-
   res.redirect("/");
-
 });
 
 // Handle registration

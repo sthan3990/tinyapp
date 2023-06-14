@@ -1,7 +1,6 @@
 let express = require('express');
 let app = express();
 const generateShortKey = require('./src/helpers/random.js');
-const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 const bcrypt = require("bcrypt");
@@ -49,9 +48,10 @@ app.use(express.static(__dirname));
 app.use(helmet());
 
 // register page
-app.get('/register', function(req, res) {
+app.get('/register', function (req, res) {
 
   if (req.session.userID) {
+
     const templateVars = {
       urls: urlDatabase,
       msg: statusMsg,
@@ -67,10 +67,9 @@ app.get('/register', function(req, res) {
 
     res.render('pages/register', templateVars);
   }
-
 });
 
-app.get('/index', function(req, res) {
+app.get('/index', function (req, res) {
 
   const templateVars = {
     msg: statusMsg,
@@ -79,7 +78,7 @@ app.get('/index', function(req, res) {
 });
 
 // login page
-app.get('/login', function(req, res) {
+app.get('/login', function (req, res) {
 
   const templateVars = {
     msg: statusMsg,
@@ -90,58 +89,48 @@ app.get('/login', function(req, res) {
 
 // handlelogin POST request
 app.post('/login', (req, res) => {
+
   let statusMsg = "";
 
-  // 0 all good
-  // 1  email not found
-  // 2  password not found
-  // since you can't have a password without a email
-  // there won't be a email and password not found
-
-  let statusCode = 0;
+  let enteredEmail = req.body.email;
 
   for (let user in userDatabase) {
 
-    let databaseEmail = userDatabase[user].email;
-    let databasePassword = userDatabase[user].password;
+    if (userDatabase[user].email !== enteredEmail) {
+      statusMsg = "Email not found.";
 
-    // email not found
-    if (databaseEmail !== req.body.email) {
-      statusCode = 1;
-    } else if (bcrypt.compareSync(req.body.password, databasePassword) === false) {
-      statusCode = 2;
+      const templateVars = {
+        msg: statusMsg,
+      };
+
+      res.status(400).render('pages/login', templateVars);
+
+    } else if (bcrypt.compareSync(req.body.password, userDatabase[user].password) === false) {
+
+
+      statusMsg = "Passwords is incorrect.";
+
+      const templateVars = {
+        msg: statusMsg,
+      };
+
+      res.status(400).render('pages/login', templateVars);
+
+    } else {
+
+      const templateVars = {
+        urls: urlDatabase,
+        username: req.session.userID
+      };
+
+      res.render('pages/urls_index', templateVars);
+
     }
-
   }
-
-
-  if (statusCode === 1) {
-
-    statusMsg = "Email not found.";
-
-    const templateVars = {
-      msg: statusMsg,
-    };
-    res.status(400).render('pages/login', templateVars);
-  } else if (statusCode === 2) {
-
-    statusMsg = "Passwords is incorrect.";
-
-    const templateVars = {
-      msg: statusMsg,
-    };
-    res.status(400).render('pages/login', templateVars);
-
-  } else {
-    res.redirect('/urls_index');
-
-  }
-
-
 });
 
 // index page
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
 
   // if user is not logged in
   if (!req.session.userID) {
@@ -158,12 +147,12 @@ app.get('/', function(req, res) {
   }
 });
 
-app.get('/urls_new', function(req, res) {
+app.get('/urls_new', function (req, res) {
   res.render('pages/urls_new');
 });
 
 // Page that shows what's inside urlDatabase
-app.get('/urls_index', function(req, res) {
+app.get('/urls_index', function (req, res) {
 
   if (req.session.userID) {
 
@@ -184,7 +173,14 @@ app.get('/urls_index', function(req, res) {
 
 // tinyurl page
 app.get('/urls/new', (req, res) => {
-  res.render('pages/urls_new');
+
+  // If the user is not logged in, redirect GET /urls/new to GET /login
+  if (!req.session.userID) {
+    res.redirect("/login");
+  } else {
+    res.render('pages/urls_new');
+  }
+
 });
 
 // edit page

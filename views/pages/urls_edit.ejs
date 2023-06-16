@@ -19,7 +19,7 @@
         <div class="section-wrapper">
 
           <div class="nav-wrapper">
-            <%- include('../partials/_nav') %>
+            <%- include('../partials/_navMember') %>
 
           </div>
 
@@ -35,20 +35,20 @@
                 </div>
 
                 <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
-                <form class="requires-validation" action="/urls/<%= urls.id %>/edit" method="POST">
+                <form class="requires-validation" action="/urls/<%= shortURL %>/edit" method="POST">
 
                   <div class="col-md-12 mt-3">
                     <label>Short URL:</label>
                     <div class="col-md-12 mt-3">
                       <input type="text" readonly class="form-control-plaintext" id="shortURL"
-                        value="<%= urls.shortURL %>">
+                        value="<%= shortURL %>">
                     </div>
                   </div>
 
                   <div class="col-md-12 mt-3">
                     <label>Long URL:</label>
                     <div class="col-md-12 mt-3">
-                      <input class="form-control" type="text" value="<%=  urls.longURL %>" name="enteredURL" required>
+                      <input class="form-control" type="text" value="<%=  longURL %>" name="enteredURL" required>
                     </div>
                   </div>
 

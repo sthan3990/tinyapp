@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-   <%- include('../partials/_header') %>
+  <%- include('../partials/_header') %>
     <link href="/styles/index.css" rel="stylesheet" type="text/css">
     <title>TinyApp | View</title>
 </head>
@@ -10,64 +10,66 @@
 <body>
 
   <div class="row">
-    
+
     <div class="main-wrapper">
 
       <div class="row">
 
-          <div class="section-wrapper">
+        <div class="section-wrapper">
 
-            <div class="nav-wrapper">
-              <%- include('../partials/_nav') %>
-            </div>
-
-            
-              <div class="form-content">
-
-                  <div class="form-items">
-
-                      <div class="form-title">
-
-                        <h3>Logged in as: </h3>
-
-                      </div>/Users/steve/Desktop/TO_SORT/Lighthouse/tinyapp/views/pages/urls_index.ejs
-                      
-                      <table class="table table-dark table-sm">
-
-                        <thead>
-                          <tr>
-                          
-
-                            <th>Short URL ID</th>
-                            <th>Long URL</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr>
-                            <td>b2xVn2<br></td>
-                            <td>http://www.lighthouselabs.ca</td>
-                            <td><Button class="btn btn-primary">Edit</Button></td>
-                            <td><Button class="btn btn-primary">Delete</Button></td>
-                            </td>
-                          </tr>
-
-                        </tbody>
-                      </table>
-
-                  </div>
-              </div>
-              <%- include('../partials/_footer') %>
-
+          <div class="nav-wrapper">
+            <%- include('../partials/_navMember') %>
           </div>
+
+          <div class="form-content">
+
+            <div class="form-items">
+
+              <div class="form-title">
+
+                <p class="login-style">Welcome: <%= username %>
+
+              </div>
+
+              <table class="table table-dark table-sm">
+
+
+                <thead>
+                  <tr>
+                    <th>Short URL</th>
+                    <th>Long URL</th>
+                    <th>Created by</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  <td>
+                    <%=  shortURL %>
+                  </td>
+
+                  <td>
+                    <%=  longURL %>
+                  </td>
+
+                  <td>
+                    <%=  username %>
+                  </td>
+
+                </tbody>
+
+
+              </table>
+
+            </div>
+          </div>
+          <%- include('../partials/_footer') %>
+
+        </div>
       </div>
-  </div>
+    </div>
 
   </div>
-
-
 
 </body>
 

@@ -4,6 +4,7 @@
 <head>
    <%- include('../partials/_header') %>
     <link href="/styles/login.css" rel="stylesheet" type="text/css">
+    
     <title>TinyApp | Login</title>
 </head>
 
@@ -29,7 +30,7 @@
                         <h3>Login</h3>
                       </div>
                       
-                      <p>Status: <%= msg %></p>
+                      <p class="status-message"><%= msg %></p>
                       
                       <main>
                         
@@ -37,12 +38,10 @@
 
                           <div class="col-md-12">
                               <input class="form-control" type="email" name="email" placeholder="E-mail Address" required>
-                             
                           </div>
 
                          <div class="col-md-12">
                             <input class="form-control" type="password" name="password" placeholder="Password" required>
-                        
                          </div>  
   
                           <div class="form-button mt-4 d-grid col-6 mx-auto">

@@ -3,15 +3,6 @@ html, body {
   background-color: #0B1015;
 }
 
-h3 h4{
-  color: #fff;
-  margin: 30px;
-}
-
-.login-style {
-  color: yellow !important;
-}
-
 .main-wrapper {
     display: flex;
     flex-direction: column;
@@ -28,8 +19,6 @@ h3 h4{
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: #141d26 ;
-
 }
 
 .nav-wrapper{
@@ -39,8 +28,7 @@ h3 h4{
 }
 
 .form-title{
-margin-top: 25px;
-margin-bottom: 25px;
+margin-bottom: 30px;
 display: flex;
 justify-content: center;
 align-items: center;
@@ -54,16 +42,16 @@ align-items: center;
   min-width: 600px;
   border-radius: 10px;
   text-align: left;
+  background-color: #141d26 ;
 }
 
-.form-content {
+.form-content h3 {
   color: #fff;
-  text-align: left;
-  font-size: 20px;
+  text-align: center;
+  font-size: 28px;
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 0.5em;
 }
-
 
 .form-content p {
   color: #fff;
@@ -102,3 +90,16 @@ align-items: center;
   margin-bottom: 14px;
 }
 
+.status-message {
+  color: red;
+}
+
+label{
+  color:white;
+  margin-bottom: 0.5em;
+}
+
+.page-title{
+  text-align: center;
+  margin-bottom: 0.5em;
+}

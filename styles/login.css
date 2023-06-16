@@ -90,3 +90,7 @@ align-items: center;
   margin-bottom: 14px;
 }
 
+.status-message {
+  color: red;
+}
+

@@ -3,6 +3,8 @@
 
 <head>
   <%- include('../partials/_header') %>
+  <link href="/styles/theme.css" rel="stylesheet" type="text/css">
+
   <title>TinyApp | Register</title>
 
 </head>
@@ -22,7 +24,6 @@
 
           </div>
 
-
             <div class="form-content">
 
               <div class="form-items">
@@ -31,14 +32,14 @@
                   <h3>Register Today</h3>
                 </div>
 
-                <p><%= msg %></p>
+                <p class="status-message"><%= msg %></p>
                 <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
                 <main>
 
                 <form class="requires-validation" action="/register" method="POST">
 
                   <div class="col-md-12">
-                    <input class="form-control" type="text" placeholder="Full Name" name="fullname" required>
+                    <input class="form-control" type="text" name="name" placeholder="Profile Name" required>
                   </div>
 
                   <div class="col-md-12">

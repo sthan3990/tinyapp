@@ -10,6 +10,8 @@ const urlsForUser = (email, database) => {
 
     let databaseEmail = database[shortURL].owner;
 
+    console.log("my email is", databaseEmail);
+
     if (databaseEmail === email) {
       match[shortURL] = database[shortURL].longURL;
     }
@@ -52,6 +54,13 @@ const generateShortKey = () => {
   return shortURL;
 };
 
-module.exports =  {urlsForUser, generateShortKey};
+// check if the object is empty or not
+// 
+function isObjEmpty(obj) {
+  return Object.keys(obj).length === 0;
+}
+
+
+module.exports =  {urlsForUser, generateShortKey, isObjEmpty};
 
 

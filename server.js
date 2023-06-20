@@ -4,28 +4,12 @@ const cookieSession = require('cookie-session');
 const helmet = require('helmet');
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
-const { urlsForUser, generateShortKey } = require('./server/helpers/ServerHelper');
+const { urlsForUser, generateShortKey, isObjEmpty } = require('./server/helpers/ServerHelper');
 
 const urlDatabase = {
   'b2xVn2': {
     'longURL': 'https://www.google.com',
-    'owner': '222@gg.com',
-  },
-  'b222x2': {
-    'longURL': 'https://www.google.com',
-    'owner': '222@gg.com',
-  },
-  'b21V22': {
-    'longURL': 'https://www.google.com',
-    'owner': '222@gg.com',
-  },
-  'bc212n': {
-    'longURL': 'https://www.google.com',
-    'owner': '222@gg.com',
-  },
-  'bc2122n': {
-    'longURL': 'https://www.google.com',
-    'owner': '2@gg.com',
+    'owner': '222@gg.com'
   }
 };
 
@@ -33,7 +17,7 @@ const userDatabase = {
   'email': {
     'name': '',
     'password': '',
-  }
+  },
 };
 
 // set the view engine to ejs
@@ -61,12 +45,7 @@ app.get('/register', function (req, res) {
 
   if (req.session.userID) {
 
-    const templateVars = {
-      urls: urlDatabase,
-      username: req.session.userID
-    };
-
-    res.render('pages/urls_index', templateVars);
+    res.redirect('/urls_index');
 
   } else {
 
@@ -90,8 +69,6 @@ app.get('/index', function (req, res) {
 // login page
 app.get('/login', function (req, res) {
 
-  console.log(userDatabase);
-
   const templateVars = {
     msg: ``,
   };
@@ -109,16 +86,8 @@ app.get('/', function (req, res) {
 
   } else {
 
-    let userURLS = urlsForUser(req.session.userEmail, urlDatabase);
+    res.redirect('/index');
 
-    const templateVars = {
-      urls: userURLS,
-      username: req.session.userID,
-      email: req.session.userEmail
-
-    };
-
-    res.render('pages/urls_index', templateVars);
   }
 });
 
@@ -132,9 +101,11 @@ app.get('/urls_view', function (req, res) {
 
 // Page that shows after user is logged and shows what is inside urlDatabase
 app.get('/urls_index', function (req, res) {
-  let userURLS = urlsForUser(req.session.userEmail, {userDatabase});
 
-  if (req.session.userID) {
+  let userURLS = urlsForUser(req.session.userEmail, urlDatabase);
+  let isEmpty = isObjEmpty(userURLS);
+
+  if (req.session.userID && isEmpty !== true) {
     const templateVars = {
       urls: userURLS,
       username: req.session.userID,
@@ -144,10 +115,8 @@ app.get('/urls_index', function (req, res) {
     res.render('pages/urls_index', templateVars);
 
   } else {
-    const templateVars = {
-      msg: `Access denied. You must be logged in to view the URLs page.`,
-    };
-    res.status(400).render('pages/index', templateVars);
+    res.status(400);
+    res.redirect('/index');
   }
 });
 
@@ -166,43 +135,52 @@ app.get('/urls/new', (req, res) => {
 // edit page
 app.get('/urls/:shortURL/edit', (req, res) => {
 
-  // check if the logged in user owns the URL
-  let result = urlsForUser(req.session.userID, urlDatabase);
+  let userURLS = urlsForUser(req.session.userEmail, urlDatabase);
+  let isEmpty = isObjEmpty(userURLS);
 
-  const templateVars = {
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
-    username: req.session.userID
-  };
-
-  res.render('pages/urls_edit', templateVars);
+  if (!req.session.userID) {
+    res.status(400);
+    res.redirect('/index');
+  }
+  else if (isEmpty === false) {
+    res.status(404);
+    res.redirect('/urls_index');
+  }
+  else {
+    const templateVars = {
+      longURL: urlDatabase[req.params.shortURL].longURL,
+      shortURL: req.params.shortURL,
+      username: req.session.userID,
+      email: req.session.userEmail
+    };
+    res.render('pages/urls_edit', templateVars);
+  }
 
 });
+
 
 // view page
 app.get('/urls/:shortURL/', (req, res) => {
 
-  // check if the logged in user owns the URL
-  let result = urlsForUser(req.session.userEmail, {urlDatabase});
+  let userURLS = urlsForUser(req.session.userEmail, userDatabase);
+  let isEmpty = isObjEmpty(userURLS);
 
-  console.log(result);
+  // user is logged in but the object is empty
+  if (!req.session.userID || isEmpty === true) {
+    res.status(400);
+    res.redirect('/urls_index');
+  } else {
 
-  if (result === 1) {
+    let shortURL = req.params.shortURL;
+
     const templateVars = {
-      shortURL: req.params.shortURL,
-      longURL: urlDatabase[req.params.shortURL].longURL,
-      username: req.session.userEmail
+      urls: userURLS,
+      shortURL: shortURL,
+      username: req.session.userID,
+      email: req.session.userEmail
     };
-
-    res.render('pages/urls_view', templateVars);
+    res.render('pages/urls_edit', templateVars);
   }
-
-  const templateVars = {
-    msg: `Not authorized to view this URL`,
-    username: req.session.userEmail
-  };
-
-  res.render('pages/urls_index', templateVars);
 
 });
 
@@ -227,37 +205,31 @@ app.get('/urls_logout', (req, res) => {
 app.post('/register', (req, res) => {
 
   const enteredEmail = req.body.email;
+  const hasKey = enteredEmail in userDatabase;
 
   // Check if the user is already registered
-  for (let user in userDatabase) {
+  if (!hasKey) {
 
-    let databaseEmail = userDatabase[user].email;
+    const id = Math.floor(Math.random() * 4);
+    const name = req.body.name + "#" + id;
+    const salt = bcrypt.genSaltSync(3);
 
-    // email already exists
-    if (databaseEmail === enteredEmail) {
+    // use salt to hash password
+    const password = bcrypt.hashSync(req.body.password, salt);
 
-      const templateVars = {
-        msg: `Email: ${databaseEmail} already exisits!`
-      };
+    userDatabase[enteredEmail] = {
+      name,
+      password,
+    };
 
-      res.status(400).res.render('pages/register', templateVars);
-
-    }
+    res.redirect('/login');
   }
 
-  const id = Math.floor(Math.random() * 4);
-  const name = req.body.name + "#" + id;
-  const salt = bcrypt.genSaltSync(5);
-
-  // use salt to hash password
-  const password = bcrypt.hashSync(req.body.password, salt);
-
-  userDatabase[enteredEmail] = {
-    name,
-    password,
+  const templateVars = {
+    msg: `Account exists with that email!`
   };
 
-  res.redirect('/login');
+  res.status(403, templateVars);
 
 });
 
@@ -265,41 +237,23 @@ app.post('/register', (req, res) => {
 app.post('/login', (req, res) => {
 
   const enteredEmail = req.body.email;
+  const hasKey = enteredEmail in userDatabase;
 
-  // find this email in the userDatabase
-  if (userDatabase[enteredEmail] === "") {
-    const templateVars = {
-      msg: `The email address ${enteredEmail} was not found!`,
-    };
+  if (hasKey) {
+    const enteredPassword = req.body.password;
+    const databasePassword = userDatabase[enteredEmail].password;
 
-    res.status(400).render('pages/login', templateVars);
+    if (bcrypt.compareSync(enteredPassword, databasePassword) === true) {
+      req.session.userID = userDatabase[enteredEmail].name;
+      req.session.userEmail = enteredEmail;
+      res.redirect('/urls_index');
 
-    // check if the password is correct
-
-  } else if (bcrypt.compareSync(req.body.password, userDatabase[enteredEmail].password) === false) {
-
-    const templateVars = {
-      msg: `The password you entered is incorrect.`,
-    };
-
-    res.status(400).render('pages/login', templateVars);
-
-  } else {
-    const username = userDatabase[enteredEmail].name;
-
-    // create needed cookies
-    req.session.userID = username;
-    req.session.userEmail = enteredEmail;
-
-    const templateVars = {
-      urls: urlDatabase,
-      username: req.session.userID,
-      email: req.session.userEmail
-    };
-
-    res.render('pages/urls_index', templateVars);
-
+    }
   }
+  const templateVars = {
+    msg: `The email address or password is incorrect!`,
+  };
+  res.status(400, templateVars);
 
 });
 
@@ -311,9 +265,10 @@ app.post('/urls_new', (req, res) => {
   const longURL = req.body.enteredURL;
 
   urlDatabase[shortURL] = {
-    longURL,
-    owner
+    longURL: longURL,
+    owner: owner
   };
+
 
   res.redirect("/urls_index");
 });
@@ -322,17 +277,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
   const shortURL = req.params.shortURL;
 
-  // if the user is not logged in
-  if (!req.session.userID) {
-    const templateVars = {
-      msg: `You must be logged in to delete a URL!`
-    };
-
-    res.status(400).res.render('pages/index', templateVars);
-
-    return;
-  }
-
   delete urlDatabase[shortURL];
   res.redirect('/urls_index');
 
@@ -340,20 +284,10 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.post("/urls/:shortURL/edit", (req, res) => {
 
-  // if the user is not logged in
-  if (!req.session.userID) {
-    const templateVars = {
-      msg: `You must be logged in to edit a URL!`
-    };
-
-    res.status(400).res.render('pages/index', templateVars);
-
-    return;
-  }
-
   urlDatabase[req.params.shortURL].longURL = req.body.enteredURL;
 
   res.redirect("/urls_index");
+
 });
 
 

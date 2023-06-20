@@ -10,15 +10,11 @@ const urlsForUser = (email, database) => {
 
     let databaseEmail = database[shortURL].owner;
 
-    console.log("my email is", databaseEmail);
-
     if (databaseEmail === email) {
       match[shortURL] = database[shortURL].longURL;
     }
   }
-
-  console.log(match);
-
+  
   return match;
 };
 

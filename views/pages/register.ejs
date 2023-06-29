@@ -3,9 +3,9 @@
 
 <head>
   <%- include('../partials/_header') %>
-  <link href="/styles/theme.css" rel="stylesheet" type="text/css">
+    <link href="/styles/theme.css" rel="stylesheet" type="text/css">
 
-  <title>TinyApp | Register</title>
+    <title>TinyApp | Register</title>
 
 </head>
 
@@ -24,23 +24,20 @@
 
           </div>
 
-            <div class="form-content">
+          <div class="form-content">
 
-              <div class="form-items">
+            <div class="form-items">
 
-                
-                  <div class="row">
-                    <h3>Register</h3>
-                  </div>
-                  
-                  <div class="row">
-                    <p class="status-message"><%= msg %></p>
-                  </div>
-               
 
-            
-                <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
-                <main>
+              <div class="row">
+                <h3>Register</h3>
+              </div>
+
+
+
+
+              <!-- GOT HELP: https://getbootstrap.com/docs/5.0/forms/validation/ -->
+              <main>
 
                 <form class="requires-validation" action="/register" method="POST">
 
@@ -61,11 +58,11 @@
                   </div>
                 </form>
 
-                </main>
+              </main>
 
-              </div>
             </div>
-            <%- include('../partials/_footer') %>
+          </div>
+          <%- include('../partials/_footer') %>
 
         </div>
       </div>

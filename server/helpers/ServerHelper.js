@@ -3,6 +3,8 @@
 // only display urls if the user is logged in
 // only show urls that belong to the user when logged in
 
+
+
 const urlsForUser = (email, database) => {
   const match = {};
 
@@ -14,7 +16,7 @@ const urlsForUser = (email, database) => {
       match[shortURL] = database[shortURL].longURL;
     }
   }
-  
+
   return match;
 };
 
@@ -45,7 +47,7 @@ const generateShortKey = () => {
   for (let i = 0; i < 3; i++) {
     let randLetter = Math.floor(Math.random() * letters.length);
     let randNumber = Math.floor(Math.random() * numbers.length);
-    shortURL = shortURL.concat(letters[randLetter],numbers[randNumber]);
+    shortURL = shortURL.concat(letters[randLetter], numbers[randNumber]);
   }
   return shortURL;
 };
@@ -57,6 +59,6 @@ function isObjEmpty(obj) {
 }
 
 
-module.exports =  {urlsForUser, generateShortKey, isObjEmpty};
+module.exports = { urlsForUser, generateShortKey, isObjEmpty };
 
 

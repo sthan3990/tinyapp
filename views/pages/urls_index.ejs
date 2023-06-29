@@ -54,21 +54,21 @@
                   </thead>
 
                   <tbody>
-                    <% for (let shortURL in urls) { %>
+                    <% for (let url in urls) { %>
                       <tr>
                         <td>
-                            <%= shortURL %>
+                            <%= url %>
                         </td>
                         <td>
-                          <%= urls[shortURL]. %>
+                          <%= urls[url] %>
                         </td>
                         <td>
-                          <form action="/urls/<%= shortURL %>/edit" method="GET">
+                          <form action="/urls/<%= url %>/edit" method="GET">
                             <Button class="btn btn-primary">Edit</Button>
                           </form>
                         </td>
                         <td>
-                          <form action="/urls/<%= shortURL %>/delete" method="POST">
+                          <form action="/urls/<%= url %>/delete" method="POST">
                             <Button class="btn btn-primary">Delete</Button>
                           </form>
                         </td>

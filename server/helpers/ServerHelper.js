@@ -13,7 +13,7 @@ const urlsForUser = (email, database) => {
     let databaseEmail = database[shortURL].owner;
 
     if (databaseEmail === email) {
-      match[shortURL] = database[shortURL].longURL;
+      match[shortURL] = database[shortURL];
     }
   }
 

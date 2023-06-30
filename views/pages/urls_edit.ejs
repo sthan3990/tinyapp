@@ -2,8 +2,9 @@
 <html lang="en">
 
 <head>
+  <link href="/styles/edit.css" rel="stylesheet" type="text/css">
+
   <%- include('../partials/_header') %>
-    <link href="/styles/edit.css" rel="stylesheet" type="text/css">
     <title>TinyApp | Edit URL</title>
 
 </head>
@@ -19,6 +20,7 @@
         <div class="section-wrapper">
 
           <div class="nav-wrapper">
+            
             <%- include('../partials/_navMember') %>
 
           </div>
@@ -38,6 +40,14 @@
                 <form class="requires-validation" action="/urls/<%= shortURL %>/edit" method="POST">
 
                   <div class="col-md-12 mt-3">
+                    <label>Date Created:</label>
+                    <div class="col-md-12 mt-3">
+                      <input type="text" readonly class="form-control-plaintext" id="dateCreated"
+                        value="<%= urlDatabase.dateCreated %>">
+                    </div>
+                  </div>
+
+                  <div class="col-md-12 mt-3">
                     <label>Short URL:</label>
                     <div class="col-md-12 mt-3">
                       <input type="text" readonly class="form-control-plaintext" id="shortURL"
@@ -46,14 +56,22 @@
                   </div>
 
                   <div class="col-md-12 mt-3">
+                    <label>Number of Visits:</label>
+                    <div class="col-md-12 mt-3">
+                      <input type="text" readonly class="form-control-plaintext" id="dateCreated"
+                        value="<%= urlDatabase.vists %>">
+                    </div>
+                  </div>
+
+                  <div class="col-md-12 mt-3">
                     <label>Long URL:</label>
                     <div class="col-md-12 mt-3">
-                      <input class="form-control" type="text" value="<%=  longURL %>" name="enteredURL" required>
+                      <input class="form-control" type="text" value="<%= urlDatabase.longURL %>" name="enteredURL" required>
                     </div>
                   </div>
 
                   <div class="form-button mt-3 d-grid col-6 mx-auto">
-                    <button id="submit" type="submit" class="btn btn-primary">Submit</button>
+                    <button id="submit" type="submit" class="btn btn-primary">Update</button>
                   </div>
                 </form>
 

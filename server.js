@@ -8,8 +8,10 @@ const { urlsForUser, generateShortKey, isObjEmpty } = require('./server/helpers/
 
 const urlDatabase = {
   'b2xVn2': {
+    'dateCreated' : '',
     'longURL': 'https://www.google.com',
-    'owner': '222@gg.com'
+    'owner': '222@gg.com',
+    'vists': ' ',
   }
 };
 
@@ -93,15 +95,11 @@ app.get('/urls_view', function (req, res) {
 app.get('/urls', function (req, res) {
 
   let userURLS = urlsForUser(req.session.userEmail, urlDatabase);
-  let isEmpty = isObjEmpty(userURLS);
 
-  if (isEmpty) {
-    res.redirect('urls/new');
-  } else if (req.session.userID && isEmpty !== true) {
-
+  if (req.session.userID) {
     const templateVars = {
       urls: userURLS,
-      username: userDatabase[req.session.user_id],
+      username: req.session.userID,
       email: req.session.userEmail
     };
 
@@ -122,6 +120,7 @@ app.get('/urls/new', (req, res) => {
   if (!req.session.userID) {
     res.redirect("/login");
   }
+
   res.render('pages/urls_new');
 
 });
@@ -131,20 +130,24 @@ app.get('/urls/:shortURL/edit', (req, res) => {
 
   let userURLS = urlsForUser(req.session.userEmail, urlDatabase);
   let isEmpty = isObjEmpty(userURLS);
-
+  
   if (!req.session.userID) {
     res.status(400);
     res.redirect('/index');
   } else if (isEmpty === true) {
     res.status(404);
     res.redirect('/urls');
+    
   }  else {
     const templateVars = {
-      longURL: urlDatabase[req.params.shortURL].longURL,
       shortURL: req.params.shortURL,
+      urlDatabase : urlDatabase[req.params.shortURL],
       username: req.session.userID,
       email: req.session.userEmail
     };
+
+    console.log(templateVars);
+
     res.render('pages/urls_edit', templateVars);
   }
 });
@@ -164,6 +167,7 @@ app.get('/urls/:shortURL/', (req, res) => {
     res.redirect('/urls');
   }  else {
     const templateVars = {
+      dateCreated : urlDatabase[req.params.shortURL].dateCreated,
       longURL: urlDatabase[req.params.shortURL].longURL,
       shortURL: req.params.shortURL,
       username: req.session.userID,
@@ -181,6 +185,17 @@ app.get('/urls_logout', (req, res) => {
   res.redirect('/');
 });
 
+app.get("/urls/visit/:shortURL", (req, res) => {
+
+  const shortURL = req.params.shortURL;
+  const externalSite = urlDatabase[shortURL].longURL;
+  
+  // update counter
+  urlDatabase[shortURL].vists++;
+
+  // go to the site
+  res.redirect(`https://${externalSite}`);
+});
 
 /* END OF GET ROUTES */
 
@@ -237,19 +252,38 @@ app.post('/login', (req, res) => {
 
 });
 
+
+app.post('/urls/:shortURL/edit', (req, res) => {
+
+  const shortURL = req.params.shortURL;
+  const newlongURL = req.body.enteredURL;
+  
+  // update the longURL
+  urlDatabase[shortURL].longURL = newlongURL;
+
+  // reset vists counter
+  urlDatabase[shortURL].vists = 0;
+
+  res.redirect('/urls');
+
+});
+
 // handle urls/new POST request
 app.post('/urls_new', (req, res) => {
 
   const shortURL = generateShortKey(); // Generate shortURL id
   const owner = req.session.userEmail;
   const longURL = req.body.enteredURL;
+  
+  const todayDate = new Date();
+  todayDate.toDateString();
 
   urlDatabase[shortURL] = {
+    dateCreated: todayDate,
     longURL: longURL,
-    owner: owner
+    owner: owner,
+    vists: 0
   };
-
-  console.log(urlDatabase[shortURL]);
 
   res.redirect("/urls");
 });
@@ -259,17 +293,11 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   const shortURL = req.params.shortURL;
 
   delete urlDatabase[shortURL];
+
   res.redirect('/urls');
 
 });
 
-app.post("/urls/:shortURL/edit", (req, res) => {
-
-  urlDatabase[req.params.shortURL].longURL = req.body.enteredURL;
-
-  res.redirect("/urls");
-
-});
 
 
 /* END OF POST ROUTES */

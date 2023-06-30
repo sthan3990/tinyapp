@@ -3,7 +3,7 @@ input:read-only {
   background-color: gray !important;
 }
 
-.form-content input[id=shortURL] {
+#shortURL,#dateCreated {
   color: white;
   font-weight: 600;
 }

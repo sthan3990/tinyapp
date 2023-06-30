@@ -76,6 +76,7 @@ app.get('/login', function (req, res) {
 */
 
 app.get('/', function (req, res) {
+  
   // if user is not logged in
   if (!req.session.userID) {
     res.redirect('/login');
@@ -145,9 +146,6 @@ app.get('/urls/:shortURL/edit', (req, res) => {
       username: req.session.userID,
       email: req.session.userEmail
     };
-
-    console.log(templateVars);
-
     res.render('pages/urls_edit', templateVars);
   }
 });

@@ -8,7 +8,7 @@ const { urlsForUser, generateShortKey, isObjEmpty } = require('./server/helpers/
 
 const urlDatabase = {
   'b2xVn2': {
-    'dateCreated' : '',
+    'dateCreated': '',
     'longURL': 'https://www.google.com',
     'owner': '222@gg.com',
     'vists': ' ',
@@ -76,7 +76,7 @@ app.get('/login', function (req, res) {
 */
 
 app.get('/', function (req, res) {
-  
+
   // if user is not logged in
   if (!req.session.userID) {
     res.redirect('/login');
@@ -107,6 +107,7 @@ app.get('/urls', function (req, res) {
     res.render('pages/urls_index', templateVars);
 
   } else {
+    res.send("You must login to view this page");
     console.log('Incorrect username or password');
     res
       .status(401)
@@ -119,6 +120,7 @@ app.get('/urls/new', (req, res) => {
 
   // If the user is not logged in, redirect GET /urls/new to GET /login
   if (!req.session.userID) {
+    res.send("You must login to access this page.");
     res.redirect("/login");
   }
 
@@ -131,18 +133,18 @@ app.get('/urls/:shortURL/edit', (req, res) => {
 
   let userURLS = urlsForUser(req.session.userEmail, urlDatabase);
   let isEmpty = isObjEmpty(userURLS);
-  
+
   if (!req.session.userID) {
     res.status(400);
     res.redirect('/index');
   } else if (isEmpty === true) {
     res.status(404);
     res.redirect('/urls');
-    
-  }  else {
+
+  } else {
     const templateVars = {
       shortURL: req.params.shortURL,
-      urlDatabase : urlDatabase[req.params.shortURL],
+      urlDatabase: urlDatabase[req.params.shortURL],
       username: req.session.userID,
       email: req.session.userEmail
     };
@@ -156,16 +158,16 @@ app.get('/urls/:shortURL/', (req, res) => {
 
   let userURLS = urlsForUser(req.session.userEmail, urlDatabase);
   let isEmpty = isObjEmpty(userURLS);
-  
+
   if (!req.session.userID) {
     res.status(400);
     res.redirect('/index');
   } else if (isEmpty === true) {
     res.status(404);
     res.redirect('/urls');
-  }  else {
+  } else {
     const templateVars = {
-      dateCreated : urlDatabase[req.params.shortURL].dateCreated,
+      dateCreated: urlDatabase[req.params.shortURL].dateCreated,
       longURL: urlDatabase[req.params.shortURL].longURL,
       shortURL: req.params.shortURL,
       username: req.session.userID,
@@ -178,6 +180,7 @@ app.get('/urls/:shortURL/', (req, res) => {
 
 app.get('/urls_logout', (req, res) => {
 
+  // clear cookie
   req.session = null;
 
   res.redirect('/');
@@ -187,7 +190,7 @@ app.get("/urls/visit/:shortURL", (req, res) => {
 
   const shortURL = req.params.shortURL;
   const externalSite = urlDatabase[shortURL].longURL;
-  
+
   // update counter
   urlDatabase[shortURL].vists++;
 
@@ -245,7 +248,7 @@ app.post('/login', (req, res) => {
     }
 
   }
-  
+
   res.status(400).redirect('/');
 
 });
@@ -255,7 +258,7 @@ app.post('/urls/:shortURL/edit', (req, res) => {
 
   const shortURL = req.params.shortURL;
   const newlongURL = req.body.enteredURL;
-  
+
   // update the longURL
   urlDatabase[shortURL].longURL = newlongURL;
 
@@ -272,7 +275,7 @@ app.post('/urls_new', (req, res) => {
   const shortURL = generateShortKey(); // Generate shortURL id
   const owner = req.session.userEmail;
   const longURL = req.body.enteredURL;
-  
+
   const todayDate = new Date();
   todayDate.toDateString();
 
